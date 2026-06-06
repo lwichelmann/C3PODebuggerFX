@@ -2,8 +2,8 @@ package de.soulfoxer.c3podebugger;
 
 import javafx.application.Application;
 
-public class Launcher {
+public class Main {
     public static void main(String[] args) {
-        Application.launch(HelloApplication.class, args);
+        Application.launch(C3PODebuggerApp.class, args);
     }
 }

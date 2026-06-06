@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class HelloApplication extends Application {
+public class C3PODebuggerApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         Scene scene = new Scene(ViewLoader.load(MainFragmentController.class), 320, 240);
