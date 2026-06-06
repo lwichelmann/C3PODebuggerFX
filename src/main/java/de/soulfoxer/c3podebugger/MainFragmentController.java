@@ -3,7 +3,7 @@ package de.soulfoxer.c3podebugger;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class HelloController {
+public class MainFragmentController {
     @FXML
     private Label welcomeText;
 
