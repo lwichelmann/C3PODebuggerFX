@@ -9,9 +9,12 @@ build/
 
 # IntelliJ IDEA / JetBrains
 .idea/
+.idea
+.idea/misc.xml
 *.iml
 *.iws
 *.ipr
+.idea/codeStyles/
 out/
 
 # Eclipse
