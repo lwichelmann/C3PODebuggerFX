@@ -3,6 +3,7 @@ package de.soulfoxer.c3podebugger;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
 public final class ViewLoader {
@@ -29,9 +30,18 @@ public final class ViewLoader {
         FXMLLoader loader = new FXMLLoader(fxmlUrl);
 
         try {
+            loader.setController(controllerClass.getDeclaredConstructor().newInstance());
             return loader.load();
         }catch(IOException e) {
             throw new IOException("Could not load view: " + fxml, e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
         }
 
     }
