@@ -7,10 +7,16 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class C3PODebuggerApp extends Application {
+
+    private static final int WINDOW_WIDTH = 750;
+    private static final int WINDOW_HEIGHT = 750;
+
     @Override
     public void start(Stage stage) throws IOException {
-        Scene scene = new Scene(ViewLoader.load(MainFragmentController.class), 320, 240);
+        Scene scene = new Scene(ViewLoader.load(MainFragmentController.class), WINDOW_WIDTH, WINDOW_HEIGHT);
+
         stage.setTitle("C3PO Debugger");
+        stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
     }
