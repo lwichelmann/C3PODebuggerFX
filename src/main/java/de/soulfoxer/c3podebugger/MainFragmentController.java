@@ -1,11 +1,8 @@
 package de.soulfoxer.c3podebugger;
 
-import de.soulfoxer.c3podebugger.util.InjectionChecker;
-import de.soulfoxer.c3podebugger.util.Styling;
+import de.soulfoxer.c3podebugger.util.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -13,11 +10,6 @@ import javafx.scene.layout.Region;
 public class MainFragmentController {
 
     private static final int ICON_SIZE = 24;
-
-    private static final String PLAY_ICON_PATH = "icons/play.png";
-    private static final String STOP_ICON_PATH = "icons/stop.png";
-    private static final String RESUME_ICON_PATH = "icons/resume.png";
-    private static final String STEP_OVER_ICON_PATH = "icons/stepover.png";
 
     @FXML
     private BorderPane root;
@@ -77,51 +69,17 @@ public class MainFragmentController {
     }
 
     private void styleButtons() {
-        styleButton(playButton);
-        styleButton(stopButton);
-        styleButton(resumeButton);
-        styleButton(stepOverButton);
-    }
-
-    private void styleButton(Button button) {
-        button.setStyle(Styling.BUTTON);
-        button.setOnMouseEntered(event -> applyButtonHoverStyle(button));
-        button.setOnMouseExited(event -> applyButtonDefaultStyle(button));
-    }
-
-    private void applyButtonHoverStyle(Button button) {
-        button.setStyle(Styling.BUTTON_HOVER);
-    }
-
-    private void applyButtonDefaultStyle(Button button) {
-        button.setStyle(Styling.BUTTON);
+        ButtonStyler.applyToolbarStyle(playButton);
+        ButtonStyler.applyToolbarStyle(stopButton);
+        ButtonStyler.applyToolbarStyle(resumeButton);
+        ButtonStyler.applyToolbarStyle(stepOverButton);
     }
 
     private void setButtonIcons() {
-        setButtonIcon(playButton, PLAY_ICON_PATH);
-        setButtonIcon(stopButton, STOP_ICON_PATH);
-        setButtonIcon(resumeButton, RESUME_ICON_PATH);
-        setButtonIcon(stepOverButton, STEP_OVER_ICON_PATH);
-    }
-
-    private void setButtonIcon(Button button, String iconPath) {
-        button.setGraphic(createIcon(iconPath));
-    }
-
-    private ImageView createIcon(String path) {
-        ImageView icon = new ImageView(loadImage(path));
-        configureIcon(icon);
-        return icon;
-    }
-
-    private Image loadImage(String path) {
-        return new Image(getClass().getResourceAsStream(path));
-    }
-
-    private void configureIcon(ImageView icon) {
-        icon.setFitWidth(ICON_SIZE);
-        icon.setFitHeight(ICON_SIZE);
-        icon.setPreserveRatio(true);
+        playButton.setGraphic(IconFactory.create(IconPaths.PLAY));
+        stopButton.setGraphic(IconFactory.create(IconPaths.STOP));
+        resumeButton.setGraphic(IconFactory.create(IconPaths.RESUME));
+        stepOverButton.setGraphic(IconFactory.create(IconPaths.STEP_OVER));
     }
 
     private void registerButtonActions() {
