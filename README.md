@@ -6,28 +6,28 @@ C3PO is a custom interpreted language (`c3po.exe`). This tool attaches to a
 running `c3po.exe` process and gives you a graphical debugging front-end with
 a familiar IDE-style toolbar.
 
-> ⚠️ Early stage — the UI toolbar and process status are in place; the actual
-> debugging features below are the roadmap.
+> ⚠️ **Early stage** — the UI toolbar and process status are in place;
+> the debugging features below are the roadmap.
 
 ## Goal
 
 Attach to the `c3po.exe` interpreter and debug C3PO scripts interactively:
 
-- ▶️ Play / ⏹ Stop / ⏭ Resume / ↷ Step over single lines
+- ▶️ Play / ⏹️ Stop / ⏭️ Resume / ↷ Step over single lines
 - 🔍 Inspect **global variables** at runtime
 - 🔍 Inspect **local variables** in the current scope
 - 🟢 Live connection status to the attached `c3po.exe` process
 
 ## Status
 
-| Feature                         | State        |
-|---------------------------------|--------------|
-| Toolbar UI (play/stop/…)        | ✅ Done       |
-| Dark IDE-style theme            | ✅ Done       |
-| Attach to `c3po.exe`            | 🚧 Planned    |
-| Step over single lines          | 🚧 Planned    |
-| View global variables           | 🚧 Planned    |
-| View local variables            | 🚧 Planned    |
+| Feature                  | State      |
+| ------------------------ | ---------- |
+| Toolbar UI (play/stop/…) | ✅ Done     |
+| Dark IDE-style theme     | ✅ Done     |
+| Attach to `c3po.exe`     | 🚧 Planned |
+| Step over single lines   | 🚧 Planned |
+| View global variables    | 🚧 Planned |
+| View local variables     | 🚧 Planned |
 
 ## Tech Stack
 
