@@ -7,7 +7,7 @@ import java.util.List;
 
 public final class InjectionChecker {
 
-    private InjectionChecker() {} // utility class, no instances
+    private InjectionChecker() {}
 
     public static void assertInjection(Object controller) {
         List<String> missing = new ArrayList<>();
