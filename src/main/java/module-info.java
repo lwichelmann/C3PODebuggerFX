@@ -7,4 +7,5 @@ module de.soulfoxer.c3podebugger {
 
     opens de.soulfoxer.c3podebugger to javafx.fxml;
     exports de.soulfoxer.c3podebugger;
+    exports de.soulfoxer.c3podebugger.connection;
 }
