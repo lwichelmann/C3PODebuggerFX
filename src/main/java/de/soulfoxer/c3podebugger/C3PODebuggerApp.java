@@ -13,6 +13,10 @@ public class C3PODebuggerApp extends Application {
     private static final int WINDOW_WIDTH = 750;
     private static final int WINDOW_HEIGHT = 750;
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     @Override
     public void start(Stage stage) throws IOException {
         Scene scene = new Scene(ViewLoader.load(MainFragmentController.class), WINDOW_WIDTH, WINDOW_HEIGHT);

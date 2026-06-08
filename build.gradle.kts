@@ -3,7 +3,7 @@ plugins {
     application
     id("org.javamodularity.moduleplugin") version "1.8.15"
     id("org.openjfx.javafxplugin") version "0.1.0"
-    id("org.beryx.jlink") version "3.1.1"
+    id("org.beryx.jlink") version "4.0.2"
 }
 
 group = "de.soulfoxer"
@@ -27,7 +27,7 @@ tasks.withType<JavaCompile> {
 
 application {
     mainModule.set("de.soulfoxer.c3podebugger")
-    mainClass.set("de.soulfoxer.c3podebugger.C3poDebuggerApp")
+    mainClass.set("de.soulfoxer.c3podebugger.C3PODebuggerApp")
 }
 
 javafx {
@@ -48,7 +48,7 @@ tasks.withType<Test> {
 
 jlink {
     imageZip.set(layout.buildDirectory.file("/distributions/app-${javafx.platform.classifier}.zip"))
-    options.set(listOf("--strip-debug", "--compress", "2", "--no-header-files", "--no-man-pages"))
+    options.set(listOf("--strip-debug", "--compress", "zip-6", "--no-header-files", "--no-man-pages"))
     launcher {
         name = "app"
     }
