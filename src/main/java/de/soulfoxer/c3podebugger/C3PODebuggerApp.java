@@ -1,7 +1,9 @@
 package de.soulfoxer.c3podebugger;
 
+import de.soulfoxer.c3podebugger.util.IconPaths;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -17,7 +19,12 @@ public class C3PODebuggerApp extends Application {
 
         stage.setTitle("C3PO Debugger");
         stage.setResizable(false);
+        setAppIcon(stage);
         stage.setScene(scene);
         stage.show();
+    }
+
+    private void setAppIcon(Stage stage) {
+        stage.getIcons().add(new Image(getClass().getResourceAsStream(IconPaths.APP_ICON)));
     }
 }
