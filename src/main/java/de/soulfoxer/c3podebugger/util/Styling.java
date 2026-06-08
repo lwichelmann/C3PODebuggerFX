@@ -32,5 +32,13 @@ public class Styling {
                     "-fx-background-radius: 4;" +
                     "-fx-cursor: hand;" +
                     "-fx-padding: 4;";
+
+    public static final String STATUS_LABEL =
+            "-fx-text-fill: #b8c0cc;" +
+                    "-fx-font-size: 12;" +
+                    "-fx-padding: 0 0 0 6;" +
+                    "-fx-min-width: 110;" +
+                    "-fx-max-width: 110;" +
+                    "-fx-alignment: center-left;";
 }
 

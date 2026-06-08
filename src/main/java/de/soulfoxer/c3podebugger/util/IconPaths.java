@@ -9,5 +9,9 @@ public class IconPaths {
     public static final String STEP_OVER = BASE + "stepover.png";
     public static final String APP_ICON  = BASE + "appicon.png";
 
+    public static final String DOT_CONNECTED    = BASE + "status-dot-green.png";
+    public static final String DOT_CONNECTING   = BASE + "status-dot-orange.png";
+    public static final String DOT_DISCONNECTED = BASE + "status-dot-red.png";
+
     private IconPaths() {}
 }
