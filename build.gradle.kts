@@ -27,7 +27,7 @@ tasks.withType<JavaCompile> {
 
 application {
     mainModule.set("de.soulfoxer.c3podebugger")
-    mainClass.set("de.soulfoxer.c3podebugger.HelloApplication")
+    mainClass.set("de.soulfoxer.c3podebugger.C3poDebuggerApp")
 }
 
 javafx {
