@@ -50,6 +50,11 @@ public class DebugConnection {
             s.connect(new InetSocketAddress(host, port), CONNECT_TIMEOUT_MS);
             s.setSoTimeout(READ_TIMEOUT_MS);
 
+            if (state != ConnectionState.CONNECTING) {
+                s.close();
+                return;
+            }
+
             socket = s;
             in = new BufferedReader(new InputStreamReader(s.getInputStream()));
             out = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
@@ -66,6 +71,11 @@ public class DebugConnection {
 
     private void readLoop() {
         while (state == ConnectionState.CONNECTED) {
+            BufferedReader reader = this.in;
+            if (reader == null) {
+                break;
+            }
+
             try {
                 String line = in.readLine();
                 if (line == null) {
@@ -112,16 +122,17 @@ public class DebugConnection {
     }
 
     public void send(String line) {
-        BufferedWriter writer = this.out;
-        if (state != ConnectionState.CONNECTED || writer == null) {
-            return;
-        }
-        try {
-            writer.write(line);
-            writer.write("\n");
-            writer.flush();
-        } catch (IOException e) {
-            disconnect();
+        synchronized (this) {
+            if (state != ConnectionState.CONNECTED || out == null) {
+                return;
+            }
+            try {
+                out.write(line);
+                out.write("\n");
+                out.flush();
+            } catch (IOException e) {
+                disconnect();
+            }
         }
     }
 
@@ -159,4 +170,6 @@ public class DebugConnection {
         t.setDaemon(true);
         t.start();
     }
+
+
 }

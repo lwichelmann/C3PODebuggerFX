@@ -3,19 +3,50 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
-   <top>
-      <HBox fx:id="toolBar" BorderPane.alignment="CENTER">
-         <children>
-                <Button fx:id="playButton" mnemonicParsing="false" />
-                <Button fx:id="stopButton" mnemonicParsing="false" />
-                <Button fx:id="resumeButton" mnemonicParsing="false" />
-                <Button fx:id="stepOverButton" mnemonicParsing="false" />
-            <Region fx:id="divider" />
-                <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
-            <ImageView fx:id="statusDot" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
-            <Label fx:id="statusLabel" />
-         </children>
-      </HBox>
-   </top>
+<BorderPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1">
+    <top>
+        <HBox fx:id="toolBar" BorderPane.alignment="CENTER">
+            <Button fx:id="playButton" mnemonicParsing="false"/>
+            <Button fx:id="stopButton" mnemonicParsing="false"/>
+            <Button fx:id="resumeButton" mnemonicParsing="false"/>
+            <Button fx:id="stepOverButton" mnemonicParsing="false"/>
+            <Region fx:id="divider"/>
+            <Region fx:id="spacer" HBox.hgrow="ALWAYS"/>
+            <ImageView fx:id="statusDot" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true"/>
+            <Label fx:id="statusLabel"/>
+        </HBox>
+    </top>
+    <center>
+        <SplitPane dividerPositions="0.6" orientation="VERTICAL">
+            <StackPane fx:id="codeViewContainer">
+                <TextArea fx:id="codeArea" editable="false" style="-fx-font-family: monospace;"/>
+            </StackPane>
+
+            <TabPane tabClosingPolicy="UNAVAILABLE">
+                <tabs>
+                    <Tab text="Variables">
+                        <SplitPane dividerPositions="0.5">
+                            <items>
+                                <VBox>
+                                    <Label style="-fx-text-fill: #a9b7c6; -fx-padding: 5;" text="Global Variables"/>
+                                    <TreeView fx:id="globalVariablesTree" VBox.vgrow="ALWAYS"/>
+                                </VBox>
+                                <VBox>
+                                    <Label style="-fx-text-fill: #a9b7c6; -fx-padding: 5;"
+                                           text="Local Variables (Current Scope)"/>
+                                    <TreeView fx:id="localVariablesTree" VBox.vgrow="ALWAYS"/>
+                                </VBox>
+                            </items>
+                        </SplitPane>
+                    </Tab>
+                    <Tab text="Console Output">
+                        <TextArea fx:id="consoleArea" editable="false"
+                                  style="-fx-font-family: monospace; -fx-control-inner-background: #1e1e1e;"/>
+                    </Tab>
+                </tabs>
+            </TabPane>
+        </SplitPane>
+    </center>
 </BorderPane>

@@ -10,8 +10,8 @@ import java.io.IOException;
 
 public class C3PODebuggerApp extends Application {
 
-    private static final int WINDOW_WIDTH = 750;
-    private static final int WINDOW_HEIGHT = 750;
+    private static final int WINDOW_WIDTH = 1200;
+    private static final int WINDOW_HEIGHT = 850;
 
     public static void main(String[] args) {
         launch(args);
