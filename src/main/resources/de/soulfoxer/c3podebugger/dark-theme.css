@@ -1,0 +1,87 @@
+/* --- Global Base Theme (Darcula / IntelliJ Dark Style) --- */
+.root {
+    -fx-base: #2b2b2b;
+    -fx-background: #2b2b2b;
+    -fx-control-inner-background: #2b2b2b;
+    -fx-background-color: #2b2b2b;
+    -fx-text-fill: #a9b7c6;
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+/* --- SplitPane & Layout Dividers --- */
+.split-pane, .split-pane *.split-pane-divider {
+    -fx-background-color: #2b2b2b;
+    -fx-box-border: transparent;
+}
+.split-pane *.split-pane-divider {
+    -fx-background-color: #555555;
+}
+
+/* --- TextAreas (Code & Console) --- */
+.text-area {
+    -fx-background-color: #1e1e1e;
+    -fx-text-fill: #a9b7c6;
+    -fx-font-family: monospace;
+}
+.text-area .content {
+    -fx-background-color: #1e1e1e;
+}
+
+/* --- TreeViews (Global & Local Variables) --- */
+.tree-view {
+    -fx-background-color: #2b2b2b;
+    -fx-border-color: #3c3f41;
+}
+.tree-view .cell {
+    -fx-background-color: #2b2b2b;
+    -fx-text-fill: #a9b7c6;
+}
+.tree-view .cell:selected {
+    -fx-background-color: #214283;
+    -fx-text-fill: white;
+}
+
+/* --- TabPane & Tabs --- */
+.tab-pane *.tab-header-background {
+    -fx-background-color: #3c3f41;
+}
+.tab {
+    -fx-background-color: #2b2b2b;
+    -fx-border-color: #3c3f41;
+}
+.tab:selected {
+    -fx-background-color: #3c3f41;
+}
+.tab .tab-label {
+    -fx-text-fill: #a9b7c6;
+}
+.tab:selected .tab-label {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+/* --- Labels & Headings --- */
+.label {
+    -fx-text-fill: #a9b7c6;
+}
+
+/* --- Persistentes & Hellgrünes Code-Highlighting --- */
+.text-area {
+    -fx-highlight-text-fill: #000000;
+    -fx-highlight-fill: #a9ffbc;
+}
+.text-area:focused {
+    -fx-highlight-text-fill: #000000;
+    -fx-highlight-fill: #a9ffbc;
+}
+.text-area:inactive {
+    -fx-highlight-text-fill: #000000;
+    -fx-highlight-fill: #a9ffbc;
+}
+
+/* --- Gutter (Zeilennummern) Scrollbar verstecken --- */
+#gutterView .scroll-bar {
+    -fx-pref-width: 0;
+    -fx-max-width: 0;
+    -fx-opacity: 0;
+}

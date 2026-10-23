@@ -15,7 +15,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MainFragmentController implements ConnectionListener {
 
@@ -51,9 +53,17 @@ public class MainFragmentController implements ConnectionListener {
     @FXML
     private TextArea consoleArea;
 
+    private final Set<Integer> activeBreakpoints = new HashSet<>();
     private final List<DebugVariable> globalVars = new ArrayList<>();
     private final List<DebugVariable> localVars = new ArrayList<>();
     private final DebugConnection connection = new DebugConnection(this);
+
+    private int highlightedStart = -1;
+    private int highlightedEnd = -1;
+    private int activeHighlightedLine = -1;
+
+    @FXML
+    private ListView<Integer> gutterView;
 
     @FXML
     private void initialize() {
@@ -61,6 +71,52 @@ public class MainFragmentController implements ConnectionListener {
         initializeLayout();
         initializeButtons();
         initializeStatus();
+
+        loadTestData();
+        initializeCodeArea();
+        setupColumnNumberBar();
+    }
+
+    private void setupColumnNumberBar() {
+        gutterView.setCellFactory(listView -> new ListCell<>() {
+            private final ImageView breakpointIcon = IconFactory.create("/de/soulfoxer/c3podebugger/icons/breakpoint.png", 12);
+
+            @Override
+            protected void updateItem(Integer lineNumber, boolean empty) {
+                super.updateItem(lineNumber, empty);
+                if (empty || lineNumber == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(String.valueOf(lineNumber));
+                    setStyle("-fx-text-fill: #606366; -fx-alignment: center-right; -fx-font-family: monospace; -fx-background-color: #2b2b2b;");
+
+                    setGraphic(activeBreakpoints.contains(lineNumber) ? breakpointIcon : null);
+
+                    setOnMouseClicked(event -> {
+                        if (activeBreakpoints.contains(lineNumber)) {
+                            activeBreakpoints.remove(lineNumber);
+                        } else {
+                            activeBreakpoints.add(lineNumber);
+                        }
+                        getListView().refresh();
+                    });
+                }
+            }
+        });
+
+        codeArea.scrollTopProperty().addListener((obs, oldVal, newVal) -> {
+            int topIndex = (int) (newVal.doubleValue() / 15.0);
+            gutterView.scrollTo(topIndex);
+        });
+    }
+
+    private void initializeCodeArea() {
+        codeArea.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            if (highlightedStart != -1 && highlightedEnd != -1) {
+                Platform.runLater(() -> codeArea.selectRange(highlightedStart, highlightedEnd));
+            }
+        });
     }
 
     private void initializeStatus() {
@@ -144,25 +200,30 @@ public class MainFragmentController implements ConnectionListener {
         String[] lines = text.split("\n");
 
         if (lineNumber > 0 && lineNumber <= lines.length) {
+            activeHighlightedLine = lineNumber;
             int caretPosition = 0;
             for (int i = 0; i < lineNumber - 1; i++) {
                 caretPosition += lines[i].length() + 1;
             }
-            codeArea.selectRange(caretPosition, caretPosition + lines[lineNumber - 1].length());
-            codeArea.requestFocus(); // Fokus erzwingen, damit Markierung sichtbar wird
+
+            highlightedStart = caretPosition;
+            highlightedEnd = caretPosition + lines[lineNumber - 1].length();
+
+            Platform.runLater(() -> {
+                codeArea.selectRange(highlightedStart, highlightedEnd);
+            });
         }
     }
 
 
     private void handlePausedState(String line) {
-        // Beim Pausieren alte Variablen leeren
         globalVars.clear();
         localVars.clear();
 
         try {
             int lineNumber = Integer.parseInt(line.split("=")[1]);
             highlightCodeLine(lineNumber);
-            setStepControlsDisabled(false); // Buttons freigeben
+            setStepControlsDisabled(false);
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
             consoleArea.appendText("[WARN] Fehler beim Parsen der Breakpoint-Zeile: " + line + "\n");
         }
@@ -278,21 +339,27 @@ public class MainFragmentController implements ConnectionListener {
                 """;
         codeArea.setText(sampleCode);
 
-        consoleArea.clear();
-        consoleArea.appendText("[DEBUG] Verbindung zu c3po.exe opgebaut (Port 5005)\n");
-        consoleArea.appendText("[DEBUG] Haltepunkt an Zeil 11 erreecht.\n");
-        consoleArea.appendText("[INFO] Starten Skriptausféierung...\n");
+        globalVars.clear();
+        globalVars.add(new DebugVariable("PI", "3.14159", "float", true));
+        globalVars.add(new DebugVariable("MAX_BUFFER", "1024", "int", true));
+        globalVars.add(new DebugVariable("DEBUG_MODE", "true", "bool", true));
+        updateVariablesTree(globalVariablesTree, globalVars);
 
-        updateVariablesTree(globalVariablesTree, List.of(
-                new DebugVariable("PI", "3.14159", "float", true),
-                new DebugVariable("MAX_BUFFER", "1024", "int", true),
-                new DebugVariable("DEBUG_MODE", "true", "bool", true)));
+        localVars.clear();
+        localVars.add(new DebugVariable("x", "10", "int", false));
+        localVars.add(new DebugVariable("y", "32", "int", false));
+        localVars.add(new DebugVariable("result", "42", "int", false));
+        updateVariablesTree(localVariablesTree, localVars);
 
-        updateVariablesTree(localVariablesTree, List.of(
-                new DebugVariable("x", "10", "int", false),
-                new DebugVariable("y", "32", "int", false),
-                new DebugVariable("result", "42", "int", false)));
 
-        highlightCodeLine(11);
+        Platform.runLater(() -> {
+            highlightCodeLine(11);
+        });
+
+        int lineCount = sampleCode.split("\n").length;
+        gutterView.getItems().clear();
+        for (int i = 1; i <= lineCount; i++) {
+            gutterView.getItems().add(i);
+        }
     }
 }

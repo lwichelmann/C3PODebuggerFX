@@ -21,6 +21,9 @@ public class C3PODebuggerApp extends Application {
     public void start(Stage stage) throws IOException {
         Scene scene = new Scene(ViewLoader.load(MainFragmentController.class), WINDOW_WIDTH, WINDOW_HEIGHT);
 
+        String cssPath = getClass().getResource("dark-theme.css").toExternalForm();
+        scene.getStylesheets().add(cssPath);
+
         stage.setTitle("C3PO Debugger");
         stage.setResizable(false);
         setAppIcon(stage);

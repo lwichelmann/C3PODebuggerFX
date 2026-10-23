@@ -18,16 +18,20 @@
             <Label fx:id="statusLabel"/>
         </HBox>
     </top>
-    <center>
-        <SplitPane dividerPositions="0.6" orientation="VERTICAL">
-            <StackPane fx:id="codeViewContainer">
-                <TextArea fx:id="codeArea" editable="false" style="-fx-font-family: monospace;"/>
-            </StackPane>
 
-            <TabPane tabClosingPolicy="UNAVAILABLE">
-                <tabs>
+    <center>
+        <SplitPane dividerPositions="0.75" orientation="VERTICAL">
+
+            <SplitPane dividerPositions="0.7" orientation="HORIZONTAL">
+
+                <HBox fx:id="codeViewContainer">
+                    <ListView fx:id="gutterView" minWidth="45" prefWidth="45" maxWidth="45" style="-fx-background-color: #2b2b2b; -fx-border-color: transparent #555555 transparent transparent;"/>
+                    <TextArea fx:id="codeArea" editable="false" HBox.hgrow="ALWAYS" style="-fx-font-family: monospace;"/>
+                </HBox>
+
+                <TabPane tabClosingPolicy="UNAVAILABLE">
                     <Tab text="Variables">
-                        <SplitPane dividerPositions="0.5">
+                        <SplitPane dividerPositions="0.5" orientation="VERTICAL">
                             <items>
                                 <VBox>
                                     <Label style="-fx-text-fill: #a9b7c6; -fx-padding: 5;" text="Global Variables"/>
@@ -41,12 +45,17 @@
                             </items>
                         </SplitPane>
                     </Tab>
-                    <Tab text="Console Output">
-                        <TextArea fx:id="consoleArea" editable="false"
-                                  style="-fx-font-family: monospace; -fx-control-inner-background: #1e1e1e;"/>
-                    </Tab>
-                </tabs>
+                </TabPane>
+
+            </SplitPane>
+
+            <TabPane tabClosingPolicy="UNAVAILABLE">
+                <Tab text="Console Output">
+                    <TextArea fx:id="consoleArea" editable="false"
+                              style="-fx-font-family: monospace; -fx-control-inner-background: #1e1e1e;"/>
+                </Tab>
             </TabPane>
+
         </SplitPane>
     </center>
 </BorderPane>
