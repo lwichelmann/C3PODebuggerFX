@@ -6,14 +6,20 @@ import de.soulfoxer.c3podebugger.connection.DebugConnection;
 import de.soulfoxer.c3podebugger.model.DebugVariable;
 import de.soulfoxer.c3podebugger.util.*;
 import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.stage.FileChooser;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -41,8 +47,6 @@ public class MainFragmentController implements ConnectionListener {
     private ImageView statusDot;
     @FXML
     private Label statusLabel;
-    @FXML
-    private TextArea codeArea;
 
     @FXML
     private TreeView<String> globalVariablesTree;
@@ -63,22 +67,59 @@ public class MainFragmentController implements ConnectionListener {
     private int activeHighlightedLine = -1;
 
     @FXML
-    private ListView<Integer> gutterView;
-
-    @FXML
     private void initialize() {
         validateInjection();
         initializeLayout();
         initializeButtons();
         initializeStatus();
 
-        loadTestData();
-        initializeCodeArea();
-        setupColumnNumberBar();
+        //loadTestData();
     }
 
-    private void setupColumnNumberBar() {
-        gutterView.setCellFactory(listView -> new ListCell<>() {
+    @FXML
+    private TabPane editorTabPane;
+
+    @FXML
+    private void onLoadScript() {
+        FileChooser chooser = new FileChooser();
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("C3PO Scripts", "*.c3po", "*.txt"));
+        File file = chooser.showOpenDialog(root.getScene().getWindow());
+
+        if (file != null) {
+            try {
+                String content = Files.readString(file.toPath());
+                createNewEditorTab(file.getName(), content);
+            } catch (Exception e) {
+                consoleArea.appendText("[ERROR] Fehler beim Laden: " + e.getMessage() + "\n");
+            }
+        }
+    }
+
+    private void createNewEditorTab(String tabName, String code) {
+        Tab tab = new Tab(tabName);
+        tab.setClosable(true);
+        HBox container = new HBox();
+        ListView<Integer> gutter = new ListView<>();
+        gutter.setId("gutterView");
+        TextArea editor = new TextArea(code);
+
+        gutter.setMinWidth(45);
+        gutter.setPrefWidth(45);
+        gutter.setMaxWidth(45);
+        gutter.setStyle("-fx-background-color: #2b2b2b; -fx-border-color: transparent #555555 transparent transparent;");
+        editor.setStyle("-fx-font-family: monospace;");
+        editor.setEditable(false);
+        HBox.setHgrow(editor, javafx.scene.layout.Priority.ALWAYS);
+
+        String[] lines = code.split("\n", -1);
+        int lineCount = lines.length;
+        for (int i = 1; i <= lineCount; i++) {
+            gutter.getItems().add(i);
+        }
+
+        gutter.addEventFilter(ScrollEvent.ANY, Event::consume);
+
+        gutter.setCellFactory(listView -> new ListCell<>() {
             private final ImageView breakpointIcon = IconFactory.create("/de/soulfoxer/c3podebugger/icons/breakpoint.png", 12);
 
             @Override
@@ -87,36 +128,41 @@ public class MainFragmentController implements ConnectionListener {
                 if (empty || lineNumber == null) {
                     setText(null);
                     setGraphic(null);
+                    setOnMouseClicked(null);
+                    setCursor(Cursor.DEFAULT);
                 } else {
                     setText(String.valueOf(lineNumber));
                     setStyle("-fx-text-fill: #606366; -fx-alignment: center-right; -fx-font-family: monospace; -fx-background-color: #2b2b2b;");
-
                     setGraphic(activeBreakpoints.contains(lineNumber) ? breakpointIcon : null);
 
-                    setOnMouseClicked(event -> {
-                        if (activeBreakpoints.contains(lineNumber)) {
-                            activeBreakpoints.remove(lineNumber);
-                        } else {
-                            activeBreakpoints.add(lineNumber);
-                        }
-                        getListView().refresh();
-                    });
+                    String lineContent = lines[lineNumber - 1].trim();
+                    if (lineContent.isEmpty()) {
+                        setOnMouseClicked(null);
+                        setCursor(Cursor.DEFAULT);
+                    } else {
+                        setCursor(Cursor.HAND);  // Mauszeiger als Hand anzeigen, um Interaktivität zu signalisieren
+                        setOnMouseClicked(event -> {
+                            if (activeBreakpoints.contains(lineNumber)) {
+                                activeBreakpoints.remove(lineNumber);
+                            } else {
+                                activeBreakpoints.add(lineNumber);
+                            }
+                            getListView().refresh();
+                        });
+                    }
                 }
             }
         });
 
-        codeArea.scrollTopProperty().addListener((obs, oldVal, newVal) -> {
+        editor.scrollTopProperty().addListener((obs, oldVal, newVal) -> {
             int topIndex = (int) (newVal.doubleValue() / 15.0);
-            gutterView.scrollTo(topIndex);
+            gutter.scrollTo(topIndex);
         });
-    }
 
-    private void initializeCodeArea() {
-        codeArea.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (highlightedStart != -1 && highlightedEnd != -1) {
-                Platform.runLater(() -> codeArea.selectRange(highlightedStart, highlightedEnd));
-            }
-        });
+        container.getChildren().addAll(gutter, editor);
+        tab.setContent(container);
+        editorTabPane.getTabs().add(tab);
+        editorTabPane.getSelectionModel().select(tab);
     }
 
     private void initializeStatus() {
@@ -160,7 +206,9 @@ public class MainFragmentController implements ConnectionListener {
             } else if (line.startsWith("VAR:")) {
                 handleVariableUpdate(line);
             } else if (line.startsWith("CODE:")) {
-                codeArea.setText(line.substring(5));
+                if (getCurrentEditor() != null) {
+                    getCurrentEditor().setText(line.substring(5));
+                }
             } else {
                 consoleArea.appendText(line + "\n");
             }
@@ -196,7 +244,10 @@ public class MainFragmentController implements ConnectionListener {
     }
 
     private void highlightCodeLine(int lineNumber) {
-        String text = codeArea.getText().replace("\r\n", "\n");
+        TextArea editor = getCurrentEditor();
+        if (editor == null) return;
+
+        String text = editor.getText().replace("\r\n", "\n");
         String[] lines = text.split("\n");
 
         if (lineNumber > 0 && lineNumber <= lines.length) {
@@ -209,9 +260,9 @@ public class MainFragmentController implements ConnectionListener {
             highlightedStart = caretPosition;
             highlightedEnd = caretPosition + lines[lineNumber - 1].length();
 
-            Platform.runLater(() -> {
+            /*Platform.runLater(() -> {
                 codeArea.selectRange(highlightedStart, highlightedEnd);
-            });
+            });*/
         }
     }
 
@@ -320,46 +371,52 @@ public class MainFragmentController implements ConnectionListener {
         treeView.setShowRoot(false);
     }
 
-    public void loadTestData() {
-        String sampleCode = """
-                // C3PO Test-Skript fir Debugger
-                import math;
-                
-                fn calculateSum(a: int, b: int) -> int {
-                    let temp = a + b;
-                    return temp;
-                }
-                
-                fn main() {
-                    let x = 10;
-                    let y = 32;
-                    let result = calculateSum(x, y);
-                    print(result);
-                }
-                """;
-        codeArea.setText(sampleCode);
+    /* public void loadTestData() {
+         String sampleCode = """
+                 // C3PO Test-Skript fir Debugger
+                 import math;
 
-        globalVars.clear();
-        globalVars.add(new DebugVariable("PI", "3.14159", "float", true));
-        globalVars.add(new DebugVariable("MAX_BUFFER", "1024", "int", true));
-        globalVars.add(new DebugVariable("DEBUG_MODE", "true", "bool", true));
-        updateVariablesTree(globalVariablesTree, globalVars);
+                 fn calculateSum(a: int, b: int) -> int {
+                     let temp = a + b;
+                     return temp;
+                 }
 
-        localVars.clear();
-        localVars.add(new DebugVariable("x", "10", "int", false));
-        localVars.add(new DebugVariable("y", "32", "int", false));
-        localVars.add(new DebugVariable("result", "42", "int", false));
-        updateVariablesTree(localVariablesTree, localVars);
+                 fn main() {
+                     let x = 10;
+                     let y = 32;
+                     let result = calculateSum(x, y);
+                     print(result);
+                 }
+                 """;
+         codeArea.setText(sampleCode);
+
+         globalVars.clear();
+         globalVars.add(new DebugVariable("PI", "3.14159", "float", true));
+         globalVars.add(new DebugVariable("MAX_BUFFER", "1024", "int", true));
+         globalVars.add(new DebugVariable("DEBUG_MODE", "true", "bool", true));
+         updateVariablesTree(globalVariablesTree, globalVars);
+
+         localVars.clear();
+         localVars.add(new DebugVariable("x", "10", "int", false));
+         localVars.add(new DebugVariable("y", "32", "int", false));
+         localVars.add(new DebugVariable("result", "42", "int", false));
+         updateVariablesTree(localVariablesTree, localVars);
 
 
-        Platform.runLater(() -> {
-            highlightCodeLine(11);
-        });
+         Platform.runLater(() -> highlightCodeLine(11));
 
-        int lineCount = sampleCode.split("\n").length;
-        gutterView.getItems().clear();
-        for (int i = 1; i <= lineCount; i++) {
-            gutterView.getItems().add(i);
+         int lineCount = sampleCode.split("\n").length;
+         gutterView.getItems().clear();
+         for (int i = 1; i <= lineCount; i++) {
+             gutterView.getItems().add(i);
+         }
+     }
+  }*/
+    private TextArea getCurrentEditor() {
+        Tab selectedTab = editorTabPane.getSelectionModel().getSelectedItem();
+        if (selectedTab != null && selectedTab.getContent() instanceof HBox box) {
+            return (TextArea) box.getChildren().get(1);
         }
+        return null;
     }
 }

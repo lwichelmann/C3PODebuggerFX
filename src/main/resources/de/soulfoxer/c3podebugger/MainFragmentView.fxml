@@ -7,16 +7,23 @@
             prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12"
             xmlns:fx="http://javafx.com/fxml/1">
     <top>
-        <HBox fx:id="toolBar" BorderPane.alignment="CENTER">
-            <Button fx:id="playButton" mnemonicParsing="false"/>
-            <Button fx:id="stopButton" mnemonicParsing="false"/>
-            <Button fx:id="resumeButton" mnemonicParsing="false"/>
-            <Button fx:id="stepOverButton" mnemonicParsing="false"/>
-            <Region fx:id="divider"/>
-            <Region fx:id="spacer" HBox.hgrow="ALWAYS"/>
-            <ImageView fx:id="statusDot" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true"/>
-            <Label fx:id="statusLabel"/>
-        </HBox>
+        <VBox BorderPane.alignment="CENTER">
+        <MenuBar>
+            <Menu text="File">
+                <MenuItem text="Load Script..." onAction="#onLoadScript"/>
+            </Menu>
+        </MenuBar>
+            <HBox fx:id="toolBar" BorderPane.alignment="CENTER">
+                <Button fx:id="playButton" mnemonicParsing="false"/>
+                <Button fx:id="stopButton" mnemonicParsing="false"/>
+                <Button fx:id="resumeButton" mnemonicParsing="false"/>
+                <Button fx:id="stepOverButton" mnemonicParsing="false"/>
+                <Region fx:id="divider"/>
+                <Region fx:id="spacer" HBox.hgrow="ALWAYS"/>
+                <ImageView fx:id="statusDot" fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true"/>
+                <Label fx:id="statusLabel"/>
+            </HBox>
+        </VBox>
     </top>
 
     <center>
@@ -24,10 +31,7 @@
 
             <SplitPane dividerPositions="0.7" orientation="HORIZONTAL">
 
-                <HBox fx:id="codeViewContainer">
-                    <ListView fx:id="gutterView" minWidth="45" prefWidth="45" maxWidth="45" style="-fx-background-color: #2b2b2b; -fx-border-color: transparent #555555 transparent transparent;"/>
-                    <TextArea fx:id="codeArea" editable="false" HBox.hgrow="ALWAYS" style="-fx-font-family: monospace;"/>
-                </HBox>
+                <TabPane fx:id="editorTabPane" tabClosingPolicy="ALL_TABS" />
 
                 <TabPane tabClosingPolicy="UNAVAILABLE">
                     <Tab text="Variables">

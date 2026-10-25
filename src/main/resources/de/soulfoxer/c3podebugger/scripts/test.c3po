@@ -1,0 +1,89 @@
+var greeting = "Willkommen beim C3PO Interpreter!";
+print(greeting);
+
+var a = 15;
+var b = 2;
+var result = a + b * 6;
+print("Berechnetes Ergebnis:");
+print(result);
+
+var isReady = true;
+if (isReady) {
+    print("Der if-Block wurde erfolgreich betreten.");
+} else {
+    print("Dies ist der else-Block.");
+}
+
+print("Starte den for-Block:");
+for {
+    var loopVar = 100;
+    var divided = loopVar / 10;
+    print(divided);
+}
+
+function testFunction() {
+    var funcMessage = "Funktion ohne Parameter aufgerufen!";
+    print(funcMessage);
+}
+
+testFunction();
+
+var greeting = "Willkommen beim C3PO Interpreter!";
+print(greeting);
+
+var a = 15;
+var b = 2;
+var result = a + b * 6;
+print("Berechnetes Ergebnis:");
+print(result);
+
+var isReady = true;
+if (isReady) {
+    print("Der if-Block wurde erfolgreich betreten.");
+} else {
+    print("Dies ist der else-Block.");
+}
+
+print("Starte den for-Block:");
+for {
+    var loopVar = 100;
+    var divided = loopVar / 10;
+    print(divided);
+}
+
+function testFunction() {
+    var funcMessage = "Funktion ohne Parameter aufgerufen!";
+    print(funcMessage);
+}
+
+testFunction();
+
+var greeting = "Willkommen beim C3PO Interpreter!";
+print(greeting);
+
+var a = 15;
+var b = 2;
+var result = a + b * 6;
+print("Berechnetes Ergebnis:");
+print(result);
+
+var isReady = true;
+if (isReady) {
+    print("Der if-Block wurde erfolgreich betreten.");
+} else {
+    print("Dies ist der else-Block.");
+}
+
+print("Starte den for-Block:");
+for {
+    var loopVar = 100;
+    var divided = loopVar / 10;
+    print(divided);
+}
+
+function testFunction() {
+    var funcMessage = "Funktion ohne Parameter aufgerufen!";
+    print(funcMessage);
+}
+
+testFunction();
